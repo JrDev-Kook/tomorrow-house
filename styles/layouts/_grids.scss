@@ -1,0 +1,102 @@
+/*
+  Mobile (＜768px)--------------------------------
+  fixture(별칭) ---------------- sm(모바일)
+  * # of columns ---------------- 4
+  * margin ---------------- 5px
+  * unit ---------------- 1column  - gutter -> 25% - 22.5px 
+  * gutter ---------------- 20px
+  * container-size ---------------- 100% - (margin 5px * 2)
+  * 1 column ---------------- 25% - 2.5px
+*/
+
+/*
+  *Tablet (≥768px)--------------------------------
+  fixture(별칭) ---------------- md(테블릿)
+  * # of columns ---------------- 12
+  * margin ---------------- 30px
+  * unit ---------------- 8.3333333333% - 5px - 20px  = 8.3333333333% - 25px
+  * gutter ---------------- 20px
+  * container-size ---------------- 100% - (margin 30px * 2)
+  * 1 column ---------------- 8.3333333333% - 5px 
+  * max-container-size ---------------- 최대값 960px
+*/
+
+/*
+  Desktop (≥1200px)--------------------------------
+  fixture(별칭) ---------------- lg(데스트탑)
+  * # of columns ---------------- 12
+  * margin ---------------- unit값이 px 고정이기 때문에 auto
+  * unit ---------------- 75px
+  * gutter ---------------- 20px
+  * container-size ---------------- 1140px
+  * 1 column ---------------- 75px + 20px = 95px
+  * max-container-size ---------------- 최대값 1140px
+*/
+
+// Grid System : .container , .row , col-sm,md,lg-of columns (col-md-4 etc)
+$gutter: 20px; //sm, md, lg 공용
+
+$sm-columns: 4;
+$sm-margin: 5px;
+
+$md-columns: 12;
+$md-margin: 30px;
+$md-breakpoint: 768px;
+$md-max-container: 960px + ($md-margin * 2);
+// row가 실제 gird 적용 부분이다. -> 960px 값
+
+$lg-columns: 12;
+$lg-unit: 75px;
+$lg-breakpoint: 1200px;
+$lg-max-container: ($lg-unit + $gutter) * $lg-columns;
+// $lg-max-container: 1140px;
+//@debug (($lg-unit + $gutter) * $lg-columns);
+
+.container {
+  width: 100%;
+  padding: 0 $sm-margin;
+  margin: 0 auto;
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  // col-sm-1 , col-md-1 , col-lg-1 [o]   || acol-sm1 , bcol-md-1 , ccol-lg-1 [x]
+  // ^ : all [모든] --> col- 로 시작하는 모든 것만 해당
+  // [속성 : '값'] { }  --> 속성 선택자
+  [class^='col-'] {
+    padding: 0 $gutter / 2;
+  }
+
+  @for $i from 1 through $sm-columns {
+    //@debug $i;
+    // #{변수} --> 변수 자체가 아니라, 변수의 실제 값 적용
+    .col-sm-#{$i} {
+      // width: $i / $sm-columns * 100%; 내장함수로 표현 ↓
+      width: percentage($i / $sm-columns);
+    }
+  }
+
+  @media screen and (min-width: $md-breakpoint) {
+    max-width: $md-max-container;
+    padding: 0 $md-margin;
+
+    @for $i from 1 through $md-columns {
+      .col-md-#{$i} {
+        width: percentage($i / $md-columns);
+      }
+    }
+  }
+
+  @media screen and (min-width: $lg-breakpoint) {
+    max-width: $lg-max-container;
+    padding: 0;
+
+    @for $i from 1 through $lg-columns {
+      .col-lg-#{$i} {
+        width: ($lg-unit + $gutter) * $i;
+      }
+    }
+  }
+}
